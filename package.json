@@ -1,0 +1,30 @@
+{
+    "name": "commit-message-writer",
+    "displayName": "Commit Message Writer",
+    "description": "Generate Git commit messages using AI",
+    "version": "1.0.0",
+    "publisher": "schakamaier",
+    "engines": {
+        "vscode": "^1.90.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "commit-message-writer.generate",
+                "title": "Generate Commit Message"
+            }
+        ]
+    },
+    "scripts": {
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.90.0",
+        "typescript": "^5.0.0"
+    }
+}

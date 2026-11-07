@@ -79,7 +79,7 @@ npm run watch
     ```
 
 ## Commits
-> [!NOTE] This Repo uses Conventional Commits
+ This Repo uses Conventional Commits
 ### Syntax:
 ```
 <type><optional scope>: <description>

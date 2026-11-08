@@ -3,7 +3,6 @@ import {
     getCompleteGitDiff
 } from "./git"
 import { QwenProvider } from "./QwenProvider";
-const provider = new QwenProvider();
 
 export function activate(context: vscode.ExtensionContext) {
     const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
@@ -15,12 +14,13 @@ export function activate(context: vscode.ExtensionContext) {
     const testcommand = vscode.commands.registerCommand(
         "commit-message-writer.generate",
         async () => {
-            const apiKey = await context.secrets.get("openrouter-api-key")
-            if (!apiKey) {
-                vscode.window.showErrorMessage("No API key configurated! Please set your openrouter API key first! ")
-                return
-            }
             try {
+                const apiKey = await context.secrets.get("openrouter-api-key")
+                if (!apiKey) {
+                    vscode.window.showErrorMessage("No API key configurated! Please set your openrouter API key first! ")
+                    return
+                }
+                const provider = new QwenProvider(apiKey);
                 const workspacepath: string = workspaceFolder.uri.fsPath;
                 const diff = await getCompleteGitDiff(workspacepath);
                 const response = await provider.generateResponse(diff)

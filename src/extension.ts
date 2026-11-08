@@ -7,15 +7,19 @@ const provider = new QwenProvider();
 
 export function activate(context: vscode.ExtensionContext) {
     const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
-
     if (!workspaceFolder) {
-        vscode.window.showErrorMessage("no Workspace folder opend")
+        vscode.window.showErrorMessage("no Workspace folder opened")
         return
     }
 
     const testcommand = vscode.commands.registerCommand(
         "commit-message-writer.generate",
         async () => {
+            const apiKey = await context.secrets.get("openrouter-api-key")
+            if (!apiKey) {
+                vscode.window.showErrorMessage("No API key configurated! Please set your openrouter API key first! ")
+                return
+            }
             try {
                 const workspacepath: string = workspaceFolder.uri.fsPath;
                 const diff = await getCompleteGitDiff(workspacepath);

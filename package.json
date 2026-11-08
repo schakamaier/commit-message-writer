@@ -16,6 +16,10 @@
             {
                 "command": "commit-message-writer.generate",
                 "title": "Generate Commit Message"
+            },
+            {
+                "command": "commit-message-writer.setApiKey",
+                "title": "Set API Key"
             }
         ]
     },

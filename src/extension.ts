@@ -25,7 +25,21 @@ export function activate(context: vscode.ExtensionContext) {
             }
         }
     );
-
+    const setAPIKeyCommand = vscode.commands.registerCommand(
+        "commit-message-writer.setApiKey",
+        async () => {
+            const apiKey = await vscode.window.showInputBox({
+                prompt: "Enter your API Key",
+                password: true
+            }) 
+            if (!apiKey) {
+                return;
+            }
+            await context.secrets.store("openrouter-api-key", apiKey)
+            vscode.window.showInformationMessage("API-Key successfully saved")
+        }
+    );
+    context.subscriptions.push(setAPIKeyCommand)
     context.subscriptions.push(testcommand)
 }
 

@@ -1,9 +1,13 @@
 import { AIProvider } from "./aiProvider"
+import { sendPrompt } from "./apiClient"
 
 export class QwenProvider implements AIProvider {
-    async generateResponse(prompt: string): Promise<string> {
-        return `Qwen received: 
-${prompt}`
+    private apiKey: string;
+    constructor(apiKey: string) {
+        this.apiKey = apiKey
+    }
+    generateResponse(prompt: string): Promise<string> {
+        return sendPrompt(this.apiKey, prompt)
     }
     getModelName(): string {
         return "Qwen"

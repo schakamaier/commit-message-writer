@@ -2,6 +2,8 @@ import * as vscode from "vscode";
 import {
     getCompleteGitDiff
 } from "./git"
+import { QwenProvider } from "./QwenProvider";
+const provider = new QwenProvider();
 
 export function activate(context: vscode.ExtensionContext) {
     const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
@@ -17,8 +19,9 @@ export function activate(context: vscode.ExtensionContext) {
             try {
                 const workspacepath: string = workspaceFolder.uri.fsPath;
                 const diff = await getCompleteGitDiff(workspacepath);
-                console.log(diff)
-                vscode.window.showInformationMessage("Succesfully retrieved diff")
+                const response = await provider.generateResponse(diff)
+                console.log(response)
+                vscode.window.showInformationMessage("Successfully retrieved diff")
             } catch (error) {
                 console.log("Failed to retrieve git diff:\n" + error)
                 vscode.window.showErrorMessage("Failed to retrieve Git Diff!")

@@ -13,7 +13,7 @@ interface OpenRouterResponse {
         };
     }[];
 }
-export async function sendPrompt(apiKey: string, prompt: string): Promise<string> {
+export async function sendPrompt(apiKey: string, prompt: string, model: string): Promise<string> {
     const response = await fetch(
         "https://openrouter.ai/api/v1/chat/completions",
         {
@@ -23,7 +23,7 @@ export async function sendPrompt(apiKey: string, prompt: string): Promise<string
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: "google/gemma-4-26b-a4b-it:free",
+                model,
                 messages: [{
                     role: "user",
                     content: prompt

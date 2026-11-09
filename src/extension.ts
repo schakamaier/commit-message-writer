@@ -17,13 +17,21 @@ export function activate(context: vscode.ExtensionContext) {
         async () => {
             let diff: string;
 
+            const config = vscode.workspace.getConfiguration("commit-message-writer")
+            const model = config.get<string>("model")
+
+            if (!model) {
+                vscode.window.showErrorMessage("No AI model configurated")
+                return;
+            }
+
             const apiKey = await context.secrets.get("openrouter-api-key")
             if (!apiKey) {
                 vscode.window.showErrorMessage("No API key configurated! Please set your openrouter API key first! ")
                 return
             }
 
-            const provider = new OpenrouterProvider(apiKey);
+            const provider = new OpenrouterProvider(apiKey, model);
 
             try {
                 diff = await getCompleteGitDiff(workspacepath);
@@ -36,7 +44,7 @@ export function activate(context: vscode.ExtensionContext) {
             try {
                 const response = await provider.generateResponse(diff)
                 console.log(response)
-
+                vscode.window.showInformationMessage("Successfully generated response")
             } catch (error){
                 vscode.window.showErrorMessage("Failed to generate response")                
                 if (error instanceof Error) {

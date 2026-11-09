@@ -21,7 +21,17 @@
                 "command": "commit-message-writer.setApiKey",
                 "title": "Set API Key"
             }
-        ]
+        ],
+        "configuration": {
+            "title": "Commit Message Writer",
+            "properties": {
+                "commit-message-writer.model": {
+                    "type": "string",
+                    "default": "google/gemma-4-26b-a4b-it:free",
+                    "description": "The AI Model Used to generate commit-messages"
+                }
+            }
+        }
     },
     "scripts": {
         "compile": "tsc -p ./",

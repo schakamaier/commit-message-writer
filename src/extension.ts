@@ -2,7 +2,7 @@ import * as vscode from "vscode";
 import {
     getCompleteGitDiff
 } from "./git"
-import { QwenProvider } from "./QwenProvider";
+import { OpenrouterProvider } from "./OpenrouterProvider";
 
 export function activate(context: vscode.ExtensionContext) {
     const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
@@ -20,7 +20,7 @@ export function activate(context: vscode.ExtensionContext) {
                     vscode.window.showErrorMessage("No API key configurated! Please set your openrouter API key first! ")
                     return
                 }
-                const provider = new QwenProvider(apiKey);
+                const provider = new OpenrouterProvider(apiKey);
                 const workspacepath: string = workspaceFolder.uri.fsPath;
                 const diff = await getCompleteGitDiff(workspacepath);
                 const response = await provider.generateResponse(diff)

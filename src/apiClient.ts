@@ -23,7 +23,7 @@ export async function sendPrompt(apiKey: string, prompt: string): Promise<string
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: "openrouter/free",
+                model: "google/gemma-4-26b-a4b-it:free",
                 messages: [{
                     role: "user",
                     content: prompt

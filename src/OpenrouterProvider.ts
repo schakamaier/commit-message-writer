@@ -1,7 +1,7 @@
 import { AIProvider } from "./aiProvider"
 import { sendPrompt } from "./apiClient"
 
-export class QwenProvider implements AIProvider {
+export class OpenrouterProvider implements AIProvider {
     private apiKey: string;
     constructor(apiKey: string) {
         this.apiKey = apiKey

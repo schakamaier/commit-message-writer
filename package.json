@@ -29,6 +29,11 @@
                     "type": "string",
                     "default": "google/gemma-4-26b-a4b-it:free",
                     "description": "The AI Model Used to generate commit-messages"
+                },
+                "commit-message-writer.useConventionalCommits": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Use [Conventional Commits](https://www.conventionalcommits.org/)"
                 }
             }
         }

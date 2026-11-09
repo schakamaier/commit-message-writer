@@ -11,7 +11,12 @@ interface OpenRouterResponse {
 function delay(ms: number): Promise<void> {
     return new Promise(resolve => setInterval(resolve, ms))
 }
-export async function sendPrompt(apiKey: string, prompt: string, model: string): Promise<string> {
+export async function sendPrompt(
+    apiKey: string, 
+    prompt: string, 
+    model: string, 
+    systemPrompt: string
+): Promise<string> {
     const controller = new AbortController();
 
     const timeout = setTimeout(() => {
@@ -34,10 +39,16 @@ export async function sendPrompt(apiKey: string, prompt: string, model: string):
                     },
                     body: JSON.stringify({
                         model,
-                        messages: [{
-                            role: "user",
-                            content: prompt
-                        }]
+                        messages: [
+                            {
+                                role: "system",
+                                content: systemPrompt
+                            },
+                            {
+                                role: "user",
+                                content: prompt
+                            }
+                        ]
                     }),
                     signal: controller.signal
                 }

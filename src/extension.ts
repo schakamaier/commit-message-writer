@@ -3,6 +3,9 @@ import {
     getCompleteGitDiff
 } from "./git"
 import { OpenrouterProvider } from "./OpenrouterProvider";
+import { loadSystemPrompt } from "./promptLoader";
+import { buildSystemPrompt } from "./promptBuilder";
+
 
 export function activate(context: vscode.ExtensionContext) {
     const workspaceFolder = vscode.workspace.workspaceFolders?.[0];
@@ -15,10 +18,14 @@ export function activate(context: vscode.ExtensionContext) {
     const testcommand = vscode.commands.registerCommand(
         "commit-message-writer.generate",
         async () => {
-            let diff: string;
-
             const config = vscode.workspace.getConfiguration("commit-message-writer")
             const model = config.get<string>("model")
+            const useConventionalCommits = config.get<boolean>("useConventionalCommits")
+
+            const basePrompt = await loadSystemPrompt(context.extensionUri.fsPath)
+            const systemPrompt = buildSystemPrompt(basePrompt, useConventionalCommits ?? false)
+            let diff: string;
+
 
             if (!model) {
                 vscode.window.showErrorMessage("No AI model configurated")
@@ -42,7 +49,7 @@ export function activate(context: vscode.ExtensionContext) {
                 return;
             }
             try {
-                const response = await provider.generateResponse(diff)
+                const response = await provider.generateResponse(diff, systemPrompt)
                 console.log(response)
                 vscode.window.showInformationMessage("Successfully generated response")
             } catch (error){

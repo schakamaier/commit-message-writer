@@ -8,8 +8,8 @@ export class OpenrouterProvider implements AIProvider {
         this.apiKey = apiKey
         this.model = model
     }
-    generateResponse(prompt: string): Promise<string> {
-        return sendPrompt(this.apiKey, prompt, this.model)
+    generateResponse(prompt: string, systemPrompt: string): Promise<string> {
+        return sendPrompt(this.apiKey, prompt, this.model, systemPrompt)
     }
     getModelName(): string {
         return this.model

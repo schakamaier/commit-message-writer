@@ -1,4 +1,4 @@
 export interface AIProvider {
-    generateResponse(prompt: string): Promise<string>
+    generateResponse(prompt: string, systemPrompt: string): Promise<string>
     getModelName(): string
 }

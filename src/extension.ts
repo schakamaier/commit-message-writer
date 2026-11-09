@@ -10,25 +10,40 @@ export function activate(context: vscode.ExtensionContext) {
         vscode.window.showErrorMessage("no Workspace folder opened")
         return
     }
+    const workspacepath: string = workspaceFolder.uri.fsPath;
 
     const testcommand = vscode.commands.registerCommand(
         "commit-message-writer.generate",
         async () => {
+            let diff: string;
+
+            const apiKey = await context.secrets.get("openrouter-api-key")
+            if (!apiKey) {
+                vscode.window.showErrorMessage("No API key configurated! Please set your openrouter API key first! ")
+                return
+            }
+
+            const provider = new OpenrouterProvider(apiKey);
+
             try {
-                const apiKey = await context.secrets.get("openrouter-api-key")
-                if (!apiKey) {
-                    vscode.window.showErrorMessage("No API key configurated! Please set your openrouter API key first! ")
-                    return
-                }
-                const provider = new OpenrouterProvider(apiKey);
-                const workspacepath: string = workspaceFolder.uri.fsPath;
-                const diff = await getCompleteGitDiff(workspacepath);
-                const response = await provider.generateResponse(diff)
-                console.log(response)
+                diff = await getCompleteGitDiff(workspacepath);
                 vscode.window.showInformationMessage("Successfully retrieved diff")
             } catch (error) {
                 console.log("Failed to retrieve git diff:\n" + error)
                 vscode.window.showErrorMessage("Failed to retrieve Git Diff!")
+                return;
+            }
+            try {
+                const response = await provider.generateResponse(diff)
+                console.log(response)
+
+            } catch (error){
+                vscode.window.showErrorMessage("Failed to generate response")                
+                if (error instanceof Error) {
+                    vscode.window.showErrorMessage(error.message)
+                } else {
+                    vscode.window.showErrorMessage("an unknown error occurred")
+                }
             }
         }
     );

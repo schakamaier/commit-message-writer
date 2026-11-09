@@ -38,5 +38,9 @@ export async function sendPrompt(apiKey: string, prompt: string): Promise<string
         );
     }
     const data: OpenRouterResponse = await response.json();
+    const content = data.choices[0]?.message?.content
+    if (typeof content !== "string" || content.length === 0) {
+        throw new Error("Openrouter returned invalid text")
+    }
     return data.choices[0].message.content
 }

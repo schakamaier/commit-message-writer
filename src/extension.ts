@@ -22,23 +22,30 @@ export function activate(context: vscode.ExtensionContext) {
             const model = config.get<string>("model")
             const useConventionalCommits = config.get<boolean>("useConventionalCommits")
 
-            const basePrompt = await loadSystemPrompt(context.extensionUri.fsPath)
-            const systemPrompt = buildSystemPrompt(basePrompt, useConventionalCommits ?? false)
+            let systemPrompt: string;
+            try {
+
+                const basePrompt = await loadSystemPrompt(context.extensionUri.fsPath)
+                systemPrompt = buildSystemPrompt(basePrompt, useConventionalCommits ?? false)
+            } catch {
+                vscode.window.showErrorMessage("Failed to load system prompt.");
+                return;
+            }
             let diff: string;
 
 
-            if (!model) {
+            if (!model?.trim()) {
                 vscode.window.showErrorMessage("No AI model configurated")
                 return;
             }
 
             const apiKey = await context.secrets.get("openrouter-api-key")
-            if (!apiKey) {
+            if (!apiKey?.trim()) {
                 vscode.window.showErrorMessage("No API key configurated! Please set your openrouter API key first! ")
                 return
             }
 
-            const provider = new OpenrouterProvider(apiKey, model);
+            const provider = new OpenrouterProvider(apiKey.trim(), model.trim());
 
             try {
                 diff = await getCompleteGitDiff(workspacepath);
@@ -53,11 +60,10 @@ export function activate(context: vscode.ExtensionContext) {
                 console.log(response)
                 vscode.window.showInformationMessage("Successfully generated response")
             } catch (error){
-                vscode.window.showErrorMessage("Failed to generate response")                
                 if (error instanceof Error) {
-                    vscode.window.showErrorMessage(error.message)
+                    vscode.window.showErrorMessage(`Failed to generate commit: ${error.message}`)
                 } else {
-                    vscode.window.showErrorMessage("an unknown error occurred")
+                    vscode.window.showErrorMessage("An unknown error occurred")
                 }
             }
         }
